@@ -1,0 +1,22 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+
+<!-- alpha jenkins上进行smoke test的job -->
+<suite name="alpha Regression" configfailurepolicy="continue">
+
+    <listeners>
+        <listener class-name="com.helen.framework.listener.CustomListener"/>
+    </listeners>
+    <parameter name="TraderURL" value="https://rahulshettyacademy.com/client"></parameter>
+    <parameter name="TraderName" value="sdfghwau@test.com"></parameter>
+    <parameter name="TraderPass" value="Qwe123!@"></parameter>
+    <test name="regression">
+
+        <classes>
+            <class name="com.helen.testcases.Login">
+                <methods>
+                    <include name="login"></include>
+                </methods>
+            </class>
+        </classes>
+    </test>
+</suite>

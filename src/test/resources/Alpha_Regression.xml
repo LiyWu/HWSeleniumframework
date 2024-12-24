@@ -1,0 +1,21 @@
+<?xml version="1.0" encoding="UTF-8"?><!DOCTYPE suite SYSTEM "http://testng.org/testng-1.0.dtd">
+
+<!-- alpha jenkins上进行smoke test的job -->
+<suite name="alpha Regression" configfailurepolicy="continue">
+
+ <listeners>
+     <listener class-name="com.helen.framework.listener.CustomListener"/>
+  </listeners>
+  <parameter name="Brand" value="AU"></parameter>
+
+ <test name="regression">
+
+   <classes>
+        <class name="com.helen.services.restAPI.APITests">
+            <methods>
+                <include name="testGetUser"></include>
+            </methods>
+        </class>
+    </classes>
+  </test>
+</suite><!-- Suite -->
