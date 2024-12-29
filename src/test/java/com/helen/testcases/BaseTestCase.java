@@ -1,17 +1,13 @@
 package com.helen.testcases;
 
+import com.helen.framework.PageObject;
+import com.helen.framework.helpers.WebDriverHelper;
 import com.helen.pageObjects.LoginPage;
-import org.apache.poi.ss.formula.functions.T;
-import org.openqa.selenium.support.events.EventFiringDecorator;
-import org.openqa.selenium.support.ui.WebDriverWait;
 import org.testng.ITestContext;
+import org.testng.annotations.AfterClass;
 import org.testng.annotations.BeforeClass;
 import org.testng.annotations.Optional;
 import org.testng.annotations.Parameters;
-
-import java.time.Duration;
-import java.util.concurrent.TimeUnit;
-
 public class BaseTestCase {
     protected static String serverName = "";
     protected static String TraderURL;
@@ -30,24 +26,25 @@ public class BaseTestCase {
      * @param context
      */
     @BeforeClass(alwaysRun = true)
-    @Parameters(value= {"TestEnv","headless","TraderURL", "TraderName", "TraderPass","AdminURL","AdminName","AdminPass","Debug","Server"})
+    @Parameters(value= {"TestEnv","headless","TraderURL", "TraderName", "TraderPass","Debug","Server"})
     public void beforMethod(@Optional("alpha")String TestEnv, @Optional("False") String headless,
-                            @Optional("")String TraderURL, @Optional("")String TraderName, @Optional("")String TraderPass,
-                            @Optional("")String AdminURL, @Optional("")String AdminName, @Optional("")String AdminPass, @Optional("True")String Debug, @Optional("")String server,
+                            @Optional("")String TraderURL, @Optional("")String TraderName, @Optional("")String TraderPass, @Optional("True")String Debug, @Optional("")String server,
                             ITestContext context) {
         if(!"".equals(server)) {
             serverName = server;
         }
-        launchBrowser( TestEnv,  headless, TraderURL, TraderName, TraderPass, AdminURL,  AdminName, AdminPass,  Debug, context);
+        launchBrowser( TestEnv,  headless, TraderURL, TraderName, TraderPass, Debug, context);
     }
-    @Parameters(value= {"TestEnv","headless","TraderURL", "TraderName", "TraderPass","AdminURL","AdminName","AdminPass","Debug"})
+    @Parameters(value= {"TestEnv","headless","TraderURL", "TraderName", "TraderPass","Debug"})
     public void launchBrowser(@Optional("alpha")String TestEnv, @Optional("False") String headless,
-                              @Optional("")String TraderURL, @Optional("")String TraderName, @Optional("")String TraderPass,
-                              @Optional("")String AdminURL, @Optional("")String AdminName, @Optional("")String AdminPass, @Optional("True")String Debug,
+                              @Optional("")String TraderURL, @Optional("")String TraderName, @Optional("")String TraderPass, @Optional("True")String Debug,
                               ITestContext context) {
         loginP = new LoginPage(TraderURL);
         BaseTestCase.TraderName = TraderName;
         BaseTestCase.TraderPass = TraderPass;
-
+    }
+    @AfterClass(alwaysRun = true)
+    public void tearDown() {
+        PageObject.getDriver().quit();
     }
 }

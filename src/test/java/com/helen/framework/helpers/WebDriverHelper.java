@@ -70,9 +70,11 @@ public class WebDriverHelper {
         options.addArguments("--disable-web-security");
         options.addArguments("--no-sandbox");
         options.addArguments("allow-running-insecure-content");
+        options.addArguments("--window-size=1920,1080");
+        //options.addArguments("--headless");
 
         options.setAcceptInsecureCerts(true);
-        options.setPageLoadStrategy(PageLoadStrategy.EAGER);
+       // options.setPageLoadStrategy(PageLoadStrategy.EAGER);
         return options;
     }
 

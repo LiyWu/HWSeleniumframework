@@ -43,6 +43,10 @@ public class PageObject {
         }
     }
 
+    public static WebDriver getDriver()
+    {
+        return driver;
+    }
     public boolean isElementPresent(String nameElement) {
         LOG.info("RUNNING : isElementPresent");
         By elementName = By.cssSelector(nameElement);

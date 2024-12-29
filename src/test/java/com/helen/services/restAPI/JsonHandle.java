@@ -13,17 +13,17 @@ import java.util.List;
 import java.util.Map;
 
 public class JsonHandle {
-    public static void main(String arGS[]) throws FileNotFoundException {
+    public static void main(String args[]) throws FileNotFoundException {
         Gson gson = new Gson();
         String testjson = "{\"name\":\"helen\"}";
-        String s1 = gson.fromJson(testjson,JsonObject.class).toString();
+        String strName = gson.fromJson(testjson,JsonObject.class).toString();
 
-        System.out.println("s1:" + s1);
+        System.out.println("strName:" + strName);
 
         //ReadJson from json file
         JsonReader reader = new JsonReader(new FileReader("src/test/resources/user.json"));
-        String s = JsonParser.parseReader(reader).getAsJsonObject().get("users").getAsJsonArray().get(0).toString();
-        System.out.println("s:" + s);
+        String strUser = JsonParser.parseReader(reader).getAsJsonObject().get("users").getAsJsonArray().get(0).toString();
+        System.out.println("strUser:" + strUser);
     }
 
 }

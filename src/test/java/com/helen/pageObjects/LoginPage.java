@@ -7,7 +7,7 @@ import org.slf4j.Logger;
 
 public class LoginPage extends PageObject {
 //    private static final Logger LOGGER = LoggerFactory.getLogger(LoginPage.class);
-    private By userName = new By.ByCssSelector("[type=email]");
+    private By userName = new By.ByCssSelector("#userEmail");
     private By userPassword = new By.ByCssSelector("#userPassword");
     private By loginBtn = new By.ByCssSelector("#login");
 
