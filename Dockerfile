@@ -1,7 +1,14 @@
-FROM selenium/standalone-chrome:4.33.0-20250606
+FROM --platform=linux/amd64 selenium/standalone-chrome:114.0-20250606
 
-WORKDIR /usr/src/app
+USER root
 
-COPY pom.xml /usr/src/app
+RUN apt update && \
+    apt install -y git maven vim
 
-COPY ./src/test/java /usr/src/app/src/test/java
+#CMD mvn test -DsuiteXmlFile="./src/test/resources/Alpha_Regression.xml"
+
+#USER seluser
+# install all maven deps
+#RUN cd /tmp && git clone https://github.com/LiyWu/HWSeleniumframework.git && \
+  #  cd HWSeleniumframework && \
+ #   mvn dependency:resolve

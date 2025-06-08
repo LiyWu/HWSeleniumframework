@@ -1,11 +1,19 @@
-Version: "3.8"
-service:
+services:
   selenium-tests:
     image: selenium-tests
     build:
       context: .
       dockerfile: ./Dockerfile
+    platform: linux/amd64
+    working_dir: /app
     volumes:
-      - ./target:/usr/src/app/target
-      - ~/.m2:root/.m2
-    command: mvn test -DsuiteXmlFile="./src/test/resources/Alpha_Regression.xml"
+      - .:/app
+      - ~/.m2:/home/seluser/.m2
+    command:
+      - sh
+      - -c
+      - |
+        cd /app
+        git clone https://github.com/LiyWu/HWSeleniumframework.git
+        cd HWSeleniumframework
+        mvn clean test -DsuiteXmlFile=./src/test/resources/Alpha_Regression.xml
