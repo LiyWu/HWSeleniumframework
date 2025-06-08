@@ -12,7 +12,7 @@ public class Login extends BaseTestCase{
         loginP.setUserPassoword(TraderPass);
         loginP.clickLoginBtn();
         loginP.waitLoading();
-        Assert.assertTrue(loginP.getTitle().contains("Let's Shop"));
+        Assert.assertTrue(loginP.getTitle().contains("HWLet's Shop"));
     }
 
 }

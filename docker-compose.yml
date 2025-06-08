@@ -14,6 +14,7 @@ services:
       - -c
       - |
         cd /app
-        git clone https://github.com/LiyWu/HWSeleniumframework.git
-        cd HWSeleniumframework
         mvn clean test -DsuiteXmlFile=./src/test/resources/Alpha_Regression.xml
+
+#git clone https://github.com/LiyWu/HWSeleniumframework.git
+#cd HWSeleniumframework
