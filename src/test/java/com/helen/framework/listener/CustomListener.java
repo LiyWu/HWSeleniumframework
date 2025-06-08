@@ -1,8 +1,9 @@
 package com.helen.framework.listener;
 
-import com.relevantcodes.extentreports.ExtentReports;
-import com.relevantcodes.extentreports.ExtentTest;
-import com.relevantcodes.extentreports.LogStatus;
+import com.aventstack.extentreports.Status;
+
+import com.helen.framework.PageObject;
+import io.appium.java_client.AppiumDriver;
 import org.openqa.selenium.OutputType;
 import org.openqa.selenium.TakesScreenshot;
 import org.openqa.selenium.WebDriver;
@@ -10,117 +11,81 @@ import org.testng.ITestContext;
 import org.testng.ITestListener;
 import org.testng.ITestResult;
 
+import org.apache.commons.io.FileUtils;
+
+import java.io.File;
 import java.io.IOException;
 import java.nio.file.Files;
+import java.nio.file.Path;
 import java.nio.file.Paths;
 
 public class CustomListener implements ITestListener {
-	public static String workingDir=System.getProperty("user.dir");
-	private ExtentReports extentR=new ExtentReports(workingDir+"/ExtentReports/ExtentReportResults.html", true);
+	private static final Path ScreenshotPath = Paths.get("src", "test", "resources", "Screenshots");
+
 	static {
-		// delete log file before each run
-		/*try {
-			*//*Files.delete(Paths.get(workingDir + "\\ExtentReports\\DevTools_log.html"));
-			Files.delete(Paths.get(workingDir + "\\ExtentReports\\selenium_log.html"));*//*
+		try {
+			FileUtils.deleteDirectory(ScreenshotPath.toFile());
 		} catch (IOException e) {
-			System.out.println("can't delete file " + e);
-		}*/
+			System.out.println("can't delete folder: " + e);
+		}
 	}
-	private static ExtentTest extentT;
-	private WebDriver driver;
-	
-	
+	public void onTestFailure(ITestResult result) {
+		WebDriver driver = PageObject.getDriver();// Get the current driver
+		try {
+			if(driver != null) {
+				File file = ((TakesScreenshot)driver).getScreenshotAs(OutputType.FILE);
+				//take screenshot
+				String imagePathFull = Paths.get(ScreenshotPath.toString(),
+						result.getTestClass().getRealClass().getSimpleName(), result.getName() + ".png").toString();
+				String imagePathForReport = Paths.get("..", imagePathFull).toString();
+				try {
+					FileUtils.copyFile(file, new File(imagePathFull));
+				} catch (IOException e) {
+					throw new RuntimeException(e);
+				}
+
+				ExtentReport.getTest().fail("Test Failed - Screenshot Attached")
+						.addScreenCaptureFromPath(imagePathForReport);
+				ExtentReport.getTest().fail(result.getThrowable());
+			}
+			else
+			{
+				System.out.println("Fatal error: Empty driver");
+			}
+		}catch (Exception e)
+		{
+			e.printStackTrace();
+			System.out.println("Error happened during screenshot");
+		}
+	}
+
 	@Override
 	public void onTestStart(ITestResult result) {
-		
-		System.out.println("---------------------------------------------------");
-		System.out.println("Method "+result.getName() + " Start");
-
+		ExtentReport.startTest(result.getName(), result.getMethod().getDescription());
 	}
 
 	@Override
 	public void onTestSuccess(ITestResult result) {
-		// TODO Auto-generated method stub
-		String method = "";
-		System.out.println("Method " + method + " Success");
-	
-		extentT.log(LogStatus.PASS, "Test Success "+method);
-	
-	}
-
-	@Override
-	public void onTestFailure(ITestResult result) {
-		// TODO Auto-generated method stub
-		
-		String method = "";
-		System.out.println("Method " + method + " Failed");
-		extentT.log(LogStatus.FAIL, "Test Failed: "+method);
-		
-		if(!result.getTestContext().getAttributeNames().contains("driver")) {
-			return;
-		}
-		
-		driver=(WebDriver)result.getTestContext().getAttribute("driver");
-		String base64Screenshot = "data:image/png;base64,"+((TakesScreenshot)driver).
-                getScreenshotAs(OutputType.BASE64);
-				
- 
-        //Extentreports log and screenshot operations for failed tests.
-       extentT.log(LogStatus.FAIL,"Test Failed",
-                extentT.addBase64ScreenShot(base64Screenshot));
-		extentT.log(LogStatus.INFO, "Failed Reason: " + result.getThrowable());
-
+		ExtentReport.getTest().log(Status.PASS, "Test Passed");
 	}
 
 	@Override
 	public void onTestSkipped(ITestResult result) {
-		String method = "";
-
-		System.out.println("Method " + result.getName() + " Skipped");
-		extentT.log(LogStatus.SKIP, "Test Skipped "+method);
-		
-		if(!result.getTestContext().getAttributeNames().contains("driver")) {
-			return;
-		}
-		
-		driver=(WebDriver)result.getTestContext().getAttribute("driver");
-		String base64Screenshot = "data:image/png;base64,"+((TakesScreenshot)driver).
-                getScreenshotAs(OutputType.BASE64);
-		 extentT.log(LogStatus.SKIP,"Test Skipped",
-	                extentT.addBase64ScreenShot(base64Screenshot)); 
+		ExtentReport.getTest().log(Status.SKIP, "Test Skipped");
 	}
 
 	@Override
 	public void onTestFailedButWithinSuccessPercentage(ITestResult result) {
-			
-		System.out.println("Method " + result.getName() + " Failed but Within Success Percentage");
-		extentT.log(LogStatus.SKIP, "Test is failed but within Success Percentage." +result.getName());
+		// TODO Auto-generated method stub
 	}
 
 	@Override
 	public void onStart(ITestContext context) {
-			
-		System.out.println("Test "+context.getName()+" Start");
-		
-		extentT=extentR.startTest(context.getName(), "Start Test");
+		// TODO Auto-generated method stub
 	}
 
 	@Override
 	public void onFinish(ITestContext context) {
-		
-		System.out.println("Test "+context.getName()+" End");
-		
-		extentR.endTest(extentT);
-		extentR.flush();
-		
-	}
-	
-	//Method for adding logs passed from test cases
-	 public static void reportLog(String message, String screenshotPath) {   
-		extentT.log(LogStatus.INFO, message);
-        //Extentreports log and screenshot operations for INFO steps.
-        extentT.log(LogStatus.INFO, message,
-                extentT.addScreenCapture(screenshotPath)); 
-
+		ExtentReport.getReporter().flush();
 	}
 }
