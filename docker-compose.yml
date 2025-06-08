@@ -1,0 +1,11 @@
+Version: "3.8"
+service:
+  selenium-tests:
+    image: selenium-tests
+    build:
+      context: .
+      dockerfile: ./Dockerfile
+    volumes:
+      - ./target:/usr/src/app/target
+      - ~/.m2:root/.m2
+    command: mvn test -DsuiteXmlFile="./src/test/resources/Alpha_Regression.xml"
